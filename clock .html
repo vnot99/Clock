@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ CHRONOS - Đồng Hồ Đa Năng</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Rajdhani', Arial, sans-serif;
+  }
+
+  :root {
+    --neon-cyan: #00f0ff;
+    --neon-purple: #b026ff;
+    --neon-pink: #ff0080;
+    --neon-green: #00ff88;
+    --neon-orange: #ff6b00;
+    --neon-yellow: #ffd700;
+    --dark-bg: #050508;
+    --dark-card: #0d0d15;
+    --dark-border: #1a1a2e;
+    --text-dim: #6a6a8a;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--dark-bg);
+    color: #fff;
+    overflow-x: hidden;
+    padding: 20px;
+    position: relative;
+  }
+
+  /* Grid nền */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .orb-1 { top: -100px; left: -100px; width: 400px; height: 400px; background: var(--neon-cyan); animation: floatOrb 22s ease-in-out infinite; }
+  .orb-2 { bottom: -100px; right: -100px; width: 500px; height: 500px; background: var(--neon-purple); animation: floatOrb 26s ease-in-out infinite reverse; }
+  .orb-3 { top: 50%; left: 50%; width: 350px; height: 350px; background: var(--neon-pink); animation: floatOrb 20s ease-in-out infinite; opacity: 0.15; }
+
+  @keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(60px, -60px) scale(1.15); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 10px;
+  }
+
+  .header-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: linear-gradient(90deg, rgba(0, 240, 255, 0.15), rgba(176, 38, 255, 0.15));
+    border: 1px solid var(--neon-cyan);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: var(--neon-cyan);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    animation: pulseBadge 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseBadge {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(0, 240, 255, 0.6); }
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    filter: drop-shadow(0 0 30px rgba(176, 38, 255, 0.5));
+  }
+
+  .header-sub {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 25px;
+  }
+
+  .tab {
+    padding: 12px 22px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--dark-border);
+    border-radius: 12px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tab:hover {
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+    transform: translateY(-2px);
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(176, 38, 255, 0.15));
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+  }
+
+  /* CARD */
+  .card {
+    background: linear-gradient(145deg, var(--dark-card), #07070d);
+    border: 1px solid var(--dark-border);
+    border-radius: 24px;
+    padding: 30px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .card.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), var(--neon-pink), transparent);
+    animation: slideLine 3s linear infinite;
+  }
+
+  @keyframes slideLine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* ============ TAB 1: ĐỒNG HỒ ============ */
+  .clock-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 30px;
+    align-items: center;
+  }
+
+  /* Analog Clock */
+  .analog-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .analog {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #0a0a15 0%, #050508 100%);
+    border: 2px solid var(--dark-border);
+    position: relative;
+    box-shadow: 
+      0 0 60px rgba(0, 240, 255, 0.15),
+      inset 0 0 40px rgba(0, 0, 0, 0.8);
+  }
+
+  .analog::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.15);
+  }
+
+  .analog::after {
+    content: '';
+    position: absolute;
+    inset: 20px;
+    border-radius: 50%;
+    border: 1px dashed rgba(176, 38, 255, 0.15);
+  }
+
+  /* Số trên đồng hồ */
+  .analog .number {
+    position: absolute;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+    transform-origin: center;
+    left: 50%;
+    top: 50%;
+  }
+
+  /* Vạch phút */
+  .tick {
+    position: absolute;
+    width: 2px;
+    height: 8px;
+    background: var(--text-dim);
+    left: 50%;
+    top: 50%;
+    transform-origin: center top;
+    opacity: 0.4;
+  }
+
+  .tick.major {
+    height: 14px;
+    width: 3px;
+    background: var(--neon-cyan);
+    opacity: 0.7;
+    box-shadow: 0 0 8px var(--neon-cyan);
+  }
+
+  /* Kim đồng hồ */
+  .hand {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform-origin: center bottom;
+    border-radius: 4px;
+    transition: transform 0.1s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+  }
+
+  .hand-hour {
+    width: 6px;
+    height: 70px;
+    background: linear-gradient(to top, var(--neon-cyan), var(--neon-purple));
+    margin-left: -3px;
+    box-shadow: 0 0 15px var(--neon-cyan);
+    border-radius: 3px;
+  }
+
+  .hand-minute {
+    width: 4px;
+    height: 95px;
+    background: linear-gradient(to top, var(--neon-pink), var(--neon-cyan));
+    margin-left: -2px;
+    box-shadow: 0 0 15px var(--neon-pink);
+    border-radius: 2px;
+  }
+
+  .hand-second {
+    width: 2px;
+    height: 110px;
+    background: var(--neon-yellow);
+    margin-left: -1px;
+    box-shadow: 0 0 12px var(--neon-yellow);
+    transition: transform 0.05s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+  }
+
+  .center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+    z-index: 10;
+    border: 3px solid #050508;
+  }
+
+  /* Digital Clock */
+  .digital-wrap {
+    text-align: center;
+  }
+
+  .digital-time {
+    font-family: 'Rajdhani', 'Courier New', monospace;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.5));
+    margin-bottom: 5px;
+    animation: glowTime 2s ease-in-out infinite;
+  }
+
+  @keyframes glowTime {
+    0%, 100% { filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.5)); }
+    50% { filter: drop-shadow(0 0 50px rgba(176, 38, 255, 0.7)); }
+  }
+
+  .digital-time .sec {
+    font-size: 0.55em;
+    color: var(--neon-yellow);
+    -webkit-text-fill-color: var(--neon-yellow);
+  }
+
+  .digital-time .ampm {
+    font-size: 0.35em;
+    color: var(--neon-green);
+    -webkit-text-fill-color: var(--neon-green);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .digital-date {
+    font-size: clamp(0.9rem, 2.5vw, 1.15rem);
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  .digital-date strong {
+    color: var(--neon-cyan);
+  }
+
+  .timezone-info {
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    background: rgba(0, 240, 255, 0.05);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 8px;
+    display: inline-block;
+  }
+
+  .timezone-info strong {
+    color: var(--neon-cyan);
+  }
+
+  /* ============ TAB 2: MÚI GIỜ ============ */
+  .world-intro {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+
+  .world-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+  }
+
+  .world-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--dark-border);
+    border-radius: 16px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+
+  .world-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 12px 30px rgba(0, 240, 255, 0.15);
+  }
+
+  .world-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+    opacity: 0.5;
+  }
+
+  .world-city {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .world-city .flag {
+    font-size: 1.3rem;
+  }
+
+  .world-time {
+    font-family: 'Rajdhani', monospace;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+    letter-spacing: 2px;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  }
+
+  .world-date {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .world-offset {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 0.7rem;
+    color: var(--neon-purple);
+    background: rgba(176, 38, 255, 0.15);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(176, 38, 255, 0.3);
+    font-weight: 800;
+  }
+
+  /* ============ TAB 3: BẤM GIỜ ============ */
+  .stopwatch-display {
+    text-align: center;
+    padding: 30px 20px;
+    margin-bottom: 25px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 18px;
+    border: 1px solid var(--dark-border);
+  }
+
+  .stopwatch-time {
+    font-family: 'Rajdhani', 'Courier New', monospace;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--neon-green);
+    text-shadow: 0 0 30px var(--neon-green);
+    line-height: 1;
+  }
+
+  .stopwatch-time .ms {
+    font-size: 0.45em;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 20px var(--neon-cyan);
+  }
+
+  .stopwatch-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .sw-btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 130px;
+    justify-content: center;
+  }
+
+  .sw-btn-start {
+    background: linear-gradient(135deg, var(--neon-green), #00cc6a);
+    color: #000;
+    box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+  }
+  .sw-btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+  }
+
+  .sw-btn-pause {
+    background: linear-gradient(135deg, var(--neon-orange), #ff4500);
+    color: #fff;
+    box-shadow: 0 5px 20px rgba(255, 107, 0, 0.3);
+  }
+  .sw-btn-pause:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 107, 0, 0.5);
+  }
+
+  .sw-btn-reset {
+    background: rgba(255, 0, 128, 0.15);
+    border: 1px solid var(--neon-pink);
+    color: var(--neon-pink);
+  }
+  .sw-btn-reset:hover {
+    background: rgba(255, 0, 128, 0.25);
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.4);
+  }
+
+  .sw-btn-lap {
+    background: rgba(0, 240, 255, 0.15);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+  }
+  .sw-btn-lap:hover {
+    background: rgba(0, 240, 255, 0.25);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  }
+
+  .sw-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .laps-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+
+  .laps-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  .laps-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+  }
+  .laps-list::-webkit-scrollbar-thumb {
+    background: var(--neon-cyan);
+    border-radius: 3px;
+  }
+
+  .lap-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-family: 'Rajdhani', monospace;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .lap-item .lap-num {
+    color: var(--neon-purple);
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+  }
+
+  .lap-item .lap-time {
+    color: var(--neon-cyan);
+    font-weight: 900;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+  }
+
+  .lap-item .lap-diff {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .lap-item.fastest .lap-time { color: var(--neon-green); }
+  .lap-item.slowest .lap-time { color: var(--neon-pink); }
+
+  .empty-laps {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+  }
+
+  /* ============ TAB 4: ĐẾM NGƯỢC ============ */
+  .countdown-display {
+    text-align: center;
+    padding: 40px 20px;
+    margin-bottom: 25px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 18px;
+    border: 1px solid var(--dark-border);
+    position: relative;
+  }
+
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    max-width: 700px;
+    margin: 0 auto 25px;
+  }
+
+  .cd-unit {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--dark-border);
+    border-radius: 16px;
+    padding: 20px 10px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+
+  .cd-unit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--neon-purple);
+    opacity: 0.5;
+  }
+
+  .cd-value {
+    font-family: 'Rajdhani', monospace;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 900;
+    color: var(--neon-purple);
+    text-shadow: 0 0 25px rgba(176, 38, 255, 0.7);
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .cd-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 800;
+    margin-top: 8px;
+  }
+
+  .cd-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .cd-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cd-input label {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+  }
+
+  .cd-input input {
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    outline: none;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', monospace;
+    letter-spacing: 1px;
+  }
+
+  .cd-input input:focus {
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 20px rgba(176, 38, 255, 0.3);
+  }
+
+  .cd-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cd-done-message {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 0, 128, 0.15);
+    border: 1px solid var(--neon-pink);
+    border-radius: 14px;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: var(--neon-pink);
+    text-transform: uppercase;
+    animation: pulseDone 1s ease-in-out infinite;
+  }
+
+  .cd-done-message.active {
+    display: block;
+  }
+
+  @keyframes pulseDone {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 128, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(255, 0, 128, 0.7); }
+  }
+
+  /* ============ TAB 5: HẸN GIỜ ============ */
+  .alarm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .alarm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px;
+    transition: all 0.25s;
+    animation: slideIn 0.3s ease;
+  }
+
+  .alarm-item:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.15);
+  }
+
+  .alarm-item.active {
+    border-color: var(--neon-green);
+    background: rgba(0, 255, 136, 0.05);
+  }
+
+  .alarm-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .alarm-time {
+    font-family: 'Rajdhani', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+    line-height: 1;
+  }
+
+  .alarm-label {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  .alarm-label strong {
+    color: var(--neon-purple);
+  }
+
+  .alarm-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* Toggle switch */
+  .toggle {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    background: var(--dark-border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.25s;
+  }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.25s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+
+  .toggle.on {
+    background: var(--neon-green);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+  }
+
+  .toggle.on::after {
+    left: 25px;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 0, 128, 0.15);
+    border: 1px solid var(--neon-pink);
+    border-radius: 10px;
+    color: var(--neon-pink);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-btn:hover {
+    background: rgba(255, 0, 128, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
+  }
+
+  .alarm-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--dark-border);
+    border-radius: 16px;
+  }
+
+  .alarm-form input {
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .alarm-form input:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  }
+
+  .alarm-form input[type="time"] {
+    font-family: 'Rajdhani', monospace;
+    letter-spacing: 2px;
+    font-size: 1.1rem;
+  }
+
+  .alarm-form button {
+    padding: 12px 22px;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .alarm-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 240, 255, 0.4);
+  }
+
+  /* Alarm Ringing */
+  .alarm-ring {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .alarm-ring.active {
+    display: flex;
+  }
+
+  .alarm-ring-content {
+    text-align: center;
+    padding: 40px;
+    background: linear-gradient(145deg, var(--dark-card), #07070d);
+    border: 2px solid var(--neon-pink);
+    border-radius: 24px;
+    box-shadow: 0 0 80px rgba(255, 0, 128, 0.5);
+    animation: ringPulse 0.6s ease-in-out infinite;
+    max-width: 400px;
+  }
+
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 80px rgba(255, 0, 128, 0.5); }
+    50% { transform: scale(1.03); box-shadow: 0 0 120px rgba(255, 0, 128, 0.8); }
+  }
+
+  .alarm-ring-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: bellRing 0.5s ease-in-out infinite;
+  }
+
+  @keyframes bellRing {
+    0%, 100% { transform: rotate(-15deg); }
+    50% { transform: rotate(15deg); }
+  }
+
+  .alarm-ring-time {
+    font-family: 'Rajdhani', monospace;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--neon-pink);
+    text-shadow: 0 0 30px var(--neon-pink);
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+  }
+
+  .alarm-ring-label {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+  }
+
+  .alarm-ring-btn {
+    padding: 15px 40px;
+    background: linear-gradient(135deg, var(--neon-pink), #cc0066);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 10px 30px rgba(255, 0, 128, 0.5);
+  }
+
+  .alarm-ring-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(255, 0, 128, 0.7);
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 14px 24px;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    color: #000;
+    font-weight: 800;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 240, 255, 0.5);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 9998;
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .clock-layout { grid-template-columns: 1fr; gap: 20px; }
+    .analog { width: 220px; height: 220px; }
+    .hand-hour { height: 55px; }
+    .hand-minute { height: 75px; }
+    .hand-second { height: 85px; }
+    .analog .number { font-size: 0.85rem; }
+  }
+
+  @media (max-width: 500px) {
+    .card { padding: 18px; }
+    .countdown-grid { grid-template-columns: repeat(2, 1fr); }
+    .alarm-form { grid-template-columns: 1fr; }
+    .tab { padding: 10px 14px; font-size: 0.7rem; letter-spacing: 1px; }
+    .sw-btn { min-width: auto; padding: 12px 18px; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">⚡ CHRONOS SYSTEM</div>
+    <h1>⏰ Chronos</h1>
+    <p class="header-sub">Đồng hồ đa năng • Thời gian chính xác</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('clock', this)">⏰ Đồng hồ</button>
+    <button class="tab" onclick="switchTab('world', this)">🌍 Múi giờ</button>
+    <button class="tab" onclick="switchTab('stopwatch', this)">⏱️ Bấm giờ</button>
+    <button class="tab" onclick="switchTab('countdown', this)">⏳ Đếm ngược</button>
+    <button class="tab" onclick="switchTab('alarm', this)">🔔 Hẹn giờ</button>
+  </div>
+
+  <!-- ============ TAB 1: ĐỒNG HỒ ============ -->
+  <div class="card active" id="tab-clock">
+    <div class="clock-layout">
+      <!-- Analog -->
+      <div class="analog-wrap">
+        <div class="analog" id="analog">
+          <div class="center-dot"></div>
+        </div>
+      </div>
+
+      <!-- Digital -->
+      <div class="digital-wrap">
+        <div class="digital-time" id="digitalTime">--:--<span class="sec">:--</span></div>
+        <div class="digital-date" id="digitalDate">--</div>
+        <div class="timezone-info">
+          🕐 Múi giờ: <strong id="tzName">--</strong> (<span id="tzOffset">--</span>)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2: MÚI GIỜ ============ -->
+  <div class="card" id="tab-world">
+    <p class="world-intro">🌍 Thời gian thực tại các thành phố lớn trên thế giới</p>
+    <div class="world-grid" id="worldGrid"></div>
+  </div>
+
+  <!-- ============ TAB 3: BẤM GIỜ ============ -->
+  <div class="card" id="tab-stopwatch">
+    <div class="stopwatch-display">
+      <div class="stopwatch-time" id="swTime">00:00<span class="ms">.00</span></div>
+    </div>
+
+    <div class="stopwatch-actions">
+      <button class="sw-btn sw-btn-start" id="swStartBtn" onclick="swStart()">▶ BẮT ĐẦU</button>
+      <button class="sw-btn sw-btn-lap" id="swLapBtn" onclick="swLap()" disabled>🏁 LƯU LAP</button>
+      <button class="sw-btn sw-btn-reset" id="swResetBtn" onclick="swReset()">↺ RESET</button>
+    </div>
+
+    <div class="laps-list" id="lapsList">
+      <div class="empty-laps">Chưa có lap nào. Nhấn "BẮT ĐẦU" để bắt đầu!</div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 4: ĐẾM NGƯỢC ============ -->
+  <div class="card" id="tab-countdown">
+    <div class="countdown-display">
+      <div class="countdown-grid">
+        <div class="cd-unit">
+          <div class="cd-value" id="cdDays">00</div>
+          <div class="cd-label">Ngày</div>
+        </div>
+        <div class="cd-unit">
+          <div class="cd-value" id="cdHours">00</div>
+          <div class="cd-label">Giờ</div>
+        </div>
+        <div class="cd-unit">
+          <div class="cd-value" id="cdMinutes">00</div>
+          <div class="cd-label">Phút</div>
+        </div>
+        <div class="cd-unit">
+          <div class="cd-value" id="cdSeconds">00</div>
+          <div class="cd-label">Giây</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cd-inputs">
+      <div class="cd-input">
+        <label>Ngày</label>
+        <input type="number" id="inDays" value="0" min="0">
+      </div>
+      <div class="cd-input">
+        <label>Giờ</label>
+        <input type="number" id="inHours" value="0" min="0" max="23">
+      </div>
+      <div class="cd-input">
+        <label>Phút</label>
+        <input type="number" id="inMinutes" value="5" min="0" max="59">
+      </div>
+      <div class="cd-input">
+        <label>Giây</label>
+        <input type="number" id="inSeconds" value="0" min="0" max="59">
+      </div>
+    </div>
+
+    <div class="cd-actions">
+      <button class="sw-btn sw-btn-start" id="cdStartBtn" onclick="cdStart()">▶ BẮT ĐẦU</button>
+      <button class="sw-btn sw-btn-pause" id="cdPauseBtn" onclick="cdPause()" disabled>⏸ TẠM DỪNG</button>
+      <button class="sw-btn sw-btn-reset" onclick="cdReset()">↺ RESET</button>
+    </div>
+
+    <div class="cd-done-message" id="cdDone">
+      🔔 HẾT THỜI GIAN!
+    </div>
+  </div>
+
+  <!-- ============ TAB 5: HẸN GIỜ ============ -->
+  <div class="card" id="tab-alarm">
+    <div class="alarm-list" id="alarmList">
+      <div class="empty-laps">Chưa có hẹn giờ nào. Thêm ở bên dưới!</div>
+    </div>
+
+    <div class="alarm-form">
+      <input type="time" id="alarmTime" value="07:00">
+      <input type="text" id="alarmLabel" placeholder="Nhãn (VD: Thức dậy)">
+      <button onclick="addAlarm()">➕ THÊM</button>
+    </div>
+  </div>
+</div>
+
+<!-- ALARM RING MODAL -->
+<div class="alarm-ring" id="alarmRing">
+  <div class="alarm-ring-content">
+    <div class="alarm-ring-icon">🔔</div>
+    <div class="alarm-ring-time" id="ringTime">--:--</div>
+    <div class="alarm-ring-label" id="ringLabel">Báo thức!</div>
+    <button class="alarm-ring-btn" onclick="stopAlarm()">TẮT</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ OK</div>
+
+<script>
+  // ================= TAB SWITCHING =================
+  function switchTab(name, btn) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ================= TOAST =================
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // ================= ANALOG CLOCK =================
+  function setupAnalogClock() {
+    const analog = document.getElementById('analog');
+
+    // Số 12, 3, 6, 9
+    const numbers = [
+      { n: '12', angle: 0 }, { n: '3', angle: 90 },
+      { n: '6', angle: 180 }, { n: '9', angle: 270 }
+    ];
+    numbers.forEach(({ n, angle }) => {
+      const el = document.createElement('div');
+      el.className = 'number';
+      el.textContent = n;
+      const radius = 38;
+      const rad = (angle - 90) * Math.PI / 180;
+      el.style.left = `calc(50% + ${radius * Math.cos(rad)}% - 0.5em)`;
+      el.style.top = `calc(50% + ${radius * Math.sin(rad)}% - 0.5em)`;
+      el.style.transform = 'none';
+      analog.appendChild(el);
+    });
+
+    // Vạch phút
+    for (let i = 0; i < 60; i++) {
+      const tick = document.createElement('div');
+      tick.className = 'tick' + (i % 5 === 0 ? ' major' : '');
+      const angle = i * 6;
+      const distance = i % 5 === 0 ? 45 : 46;
+      const rad = (angle - 90) * Math.PI / 180;
+      tick.style.left = `calc(50% + ${distance * Math.cos(rad)}% - 1px)`;
+      tick.style.top = `calc(50% + ${distance * Math.sin(rad)}% - 4px)`;
+      tick.style.transform = `rotate(${angle}deg)`;
+      analog.appendChild(tick);
+    }
+
+    // Kim
+    ['hour', 'minute', 'second'].forEach(type => {
+      const hand = document.createElement('div');
+      hand.className = `hand hand-${type}`;
+      hand.id = `hand-${type}`;
+      analog.appendChild(hand);
+    });
+  }
+
+  function updateAnalogClock(now) {
+    const ms = now.getMilliseconds();
+    const s = now.getSeconds() + ms / 1000;
+    const m = now.getMinutes() + s / 60;
+    const h = (now.getHours() % 12) + m / 60;
+
+    document.getElementById('hand-hour').style.transform = `rotate(${h * 30}deg)`;
+    document.getElementById('hand-minute').style.transform = `rotate(${m * 6}deg)`;
+    document.getElementById('hand-second').style.transform = `rotate(${s * 6}deg)`;
+  }
+
+  // ================= DIGITAL CLOCK =================
+  const DAYS_VI = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+
+  function updateDigitalClock(now) {
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('digitalTime').innerHTML = 
+      `${h}:${m}<span class="sec">:${s}</span>`;
+
+    const day = DAYS_VI[now.getDay()];
+    const d = now.getDate();
+    const mo = now.getMonth() + 1;
+    const y = now.getFullYear();
+    document.getElementById('digitalDate').innerHTML = 
+      `${day}, <strong>${d}/${mo}/${y}</strong>`;
+
+    const offset = -now.getTimezoneOffset() / 60;
+    const offsetStr = (offset >= 0 ? '+' : '') + offset;
+    document.getElementById('tzOffset').textContent = `UTC${offsetStr}`;
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      document.getElementById('tzName').textContent = tz;
+    } catch (e) {}
+  }
+
+  // ================= WORLD CLOCK =================
+  const WORLD_CITIES = [
+    { name: 'Hà Nội', flag: '🇻🇳', tz: 'Asia/Ho_Chi_Minh' },
+    { name: 'Tokyo', flag: '🇯🇵', tz: 'Asia/Tokyo' },
+    { name: 'Seoul', flag: '🇰🇷', tz: 'Asia/Seoul' },
+    { name: 'Bắc Kinh', flag: '🇨🇳', tz: 'Asia/Shanghai' },
+    { name: 'Singapore', flag: '🇸🇬', tz: 'Asia/Singapore' },
+    { name: 'Bangkok', flag: '🇹🇭', tz: 'Asia/Bangkok' },
+    { name: 'Dubai', flag: '🇦🇪', tz: 'Asia/Dubai' },
+    { name: 'London', flag: '🇬🇧', tz: 'Europe/London' },
+    { name: 'Paris', flag: '🇫🇷', tz: 'Europe/Paris' },
+    { name: 'Moscow', flag: '🇷🇺', tz: 'Europe/Moscow' },
+    { name: 'New York', flag: '🇺🇸', tz: 'America/New_York' },
+    { name: 'Los Angeles', flag: '🇺🇸', tz: 'America/Los_Angeles' },
+    { name: 'Sydney', flag: '🇦🇺', tz: 'Australia/Sydney' },
+    { name: 'São Paulo', flag: '🇧🇷', tz: 'America/Sao_Paulo' },
+    { name: 'Cairo', flag: '🇪🇬', tz: 'Africa/Cairo' },
+    { name: 'Mumbai', flag: '🇮🇳', tz: 'Asia/Kolkata' }
+  ];
+
+  function setupWorldClocks() {
+    const grid = document.getElementById('worldGrid');
+    grid.innerHTML = WORLD_CITIES.map((city, i) => `
+      <div class="world-card">
+        <div class="world-offset" id="wo-${i}">--</div>
+        <div class="world-city">
+          <span class="flag">${city.flag}</span>
+          <span>${city.name}</span>
+        </div>
+        <div class="world-time" id="wt-${i}">--:--</div>
+        <div class="world-date" id="wd-${i}">--</div>
+      </div>
+    `).join('');
+  }
+
+  function updateWorldClocks(now) {
+    WORLD_CITIES.forEach((city, i) => {
+      try {
+        const timeStr = now.toLocaleTimeString('vi-VN', {
+          timeZone: city.tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+        });
+        const dateStr = now.toLocaleDateString('vi-VN', {
+          timeZone: city.tz, weekday: 'short', day: '2-digit', month: '2-digit'
+        });
+        const localOffset = -now.getTimezoneOffset() / 60;
+        const cityOffset = getOffsetHours(now, city.tz);
+        const diff = cityOffset - localOffset;
+        const diffStr = diff === 0 ? '±0h' : (diff > 0 ? '+' : '') + diff + 'h';
+
+        document.getElementById('wt-' + i).textContent = timeStr;
+        document.getElementById('wd-' + i).textContent = dateStr;
+        document.getElementById('wo-' + i).textContent = diffStr;
+      } catch (e) {}
+    });
+  }
+
+  function getOffsetHours(date, tz) {
+    const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+    const tzDate = new Date(date.toLocaleString('en-US', { timeZone: tz }));
+    return (tzDate - utcDate) / 3600000;
+  }
+
+  // ================= STOPWATCH =================
+  let swRunning = false;
+  let swStartTime = 0;
+  let swElapsed = 0;
+  let swTimer = null;
+  let swLaps = [];
+  let swLastLap = 0;
+
+  function swFormat(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const minutes = String(Math.floor(totalSec / 60)).padStart(2, '0');
+    const seconds = String(totalSec % 60).padStart(2, '0');
+    const hundredths = String(Math.floor((ms % 1000) / 10)).padStart(2, '0');
+    return { main: `${minutes}:${seconds}`, ms: `.${hundredths}` };
+  }
+
+  function swRender() {
+    const f = swFormat(swElapsed);
+    document.getElementById('swTime').innerHTML = `${f.main}<span class="ms">${f.ms}</span>`;
+  }
+
+  function swStart() {
+    if (swRunning) {
+      swRunning = false;
+      clearInterval(swTimer);
+      swElapsed = Date.now() - swStartTime + swElapsed;
+      document.getElementById('swStartBtn').innerHTML = '▶ TIẾP TỤC';
+      document.getElementById('swStartBtn').className = 'sw-btn sw-btn-start';
+      document.getElementById('swLapBtn').disabled = true;
+      document.getElementById('swResetBtn').disabled = false;
+      return;
+    }
+
+    swRunning = true;
+    swStartTime = Date.now();
+    document.getElementById('swStartBtn').innerHTML = '⏸ TẠM DỪNG';
+    document.getElementById('swStartBtn').className = 'sw-btn sw-btn-pause';
+    document.getElementById('swLapBtn').disabled = false;
+    document.getElementById('swResetBtn').disabled = false;
+
+    const baseElapsed = swElapsed;
+    swStartTime = Date.now();
+    clearInterval(swTimer);
+    swTimer = setInterval(() => {
+      swElapsed = baseElapsed + (Date.now() - swStartTime);
+      swRender();
+    }, 16);
+  }
+
+  function swLap() {
+    if (!swRunning) return;
+    const lapTime = swElapsed;
+    const diff = lapTime - swLastLap;
+    swLaps.push({ total: lapTime, diff: diff });
+    swLastLap = lapTime;
+    renderLaps();
+    showToast(`🏁 Lap ${swLaps.length}: ${swFormat(lapTime).main}${swFormat(lapTime).ms}`);
+  }
+
+  function renderLaps() {
+    const list = document.getElementById('lapsList');
+    if (swLaps.length === 0) {
+      list.innerHTML = '<div class="empty-laps">Chưa có lap nào. Nhấn "BẮT ĐẦU" để bắt đầu!</div>';
+      return;
+    }
+    const diffs = swLaps.map((l, i) => ({ i, d: l.diff }));
+    const fastest = diffs.reduce((a, b) => a.d < b.d ? a : b).i;
+    const slowest = diffs.reduce((a, b) => a.d > b.d ? a : b).i;
+
+    list.innerHTML = swLaps.slice().reverse().map((lap, idx) => {
+      const realIdx = swLaps.length - 1 - idx;
+      const f = swFormat(lap.total);
+      const d = swFormat(lap.diff);
+      let cls = 'lap-item';
+      if (realIdx === fastest && swLaps.length > 1) cls += ' fastest';
+      if (realIdx === slowest && swLaps.length > 1) cls += ' slowest';
+      return `
+        <div class="${cls}">
+          <span class="lap-num">LAP ${realIdx + 1}</span>
+          <span class="lap-time">${f.main}${f.ms}</span>
+          <span class="lap-diff">+${d.main}${d.ms}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function swReset() {
+    clearInterval(swTimer);
+    swRunning = false;
+    swElapsed = 0;
+    swLaps = [];
+    swLastLap = 0;
+    swRender();
+    renderLaps();
+    document.getElementById('swStartBtn').innerHTML = '▶ BẮT ĐẦU';
+    document.getElementById('swStartBtn').className = 'sw-btn sw-btn-start';
+    document.getElementById('swLapBtn').disabled = true;
+    showToast('↺ Đã reset bấm giờ');
+  }
+
+  // ================= COUNTDOWN =================
+  let cdRunning = false;
+  let cdEndTime = 0;
+  let cdRemaining = 0;
+  let cdTimer = null;
+  let cdPaused = false;
+
+  function cdRender(ms) {
+    if (ms < 0) ms = 0;
+    const totalSec = Math.floor(ms / 1000);
+    const days = Math.floor(totalSec / 86400);
+    const hours = Math.floor((totalSec % 86400) / 3600);
+    const minutes = Math.floor((totalSec % 3600) / 60);
+    const seconds = totalSec % 60;
+    document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
+    document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('cdMinutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('cdSeconds').textContent = String(seconds).padStart(2, '0');
+  }
+
+  function cdStart() {
+    if (cdRunning && cdPaused) {
+      cdPaused = false;
+      cdEndTime = Date.now() + cdRemaining;
+      cdRunning = true;
+      document.getElementById('cdPauseBtn').disabled = false;
+      document.getElementById('cdStartBtn').innerHTML = '▶ CHẠY';
+      cdTimer = setInterval(cdTick, 100);
+      showToast('▶ Tiếp tục đếm ngược');
+      return;
+    }
+
+    const d = parseInt(document.getElementById('inDays').value) || 0;
+    const h = parseInt(document.getElementById('inHours').value) || 0;
+    const m = parseInt(document.getElementById('inMinutes').value) || 0;
+    const s = parseInt(document.getElementById('inSeconds').value) || 0;
+    const total = ((d * 24 + h) * 60 + m) * 60 + s;
+
+    if (total <= 0) {
+      showToast('⚠️ Nhập thời gian > 0!');
+      return;
+    }
+
+    cdEndTime = Date.now() + total * 1000;
+    cdRemaining = total * 1000;
+    cdRunning = true;
+    cdPaused = false;
+    document.getElementById('cdDone').classList.remove('active');
+    document.getElementById('cdPauseBtn').disabled = false;
+    document.getElementById('cdStartBtn').disabled = true;
+    clearInterval(cdTimer);
+    cdTimer = setInterval(cdTick, 100);
+    showToast('▶ Bắt đầu đếm ngược!');
+  }
+
+  function cdTick() {
+    cdRemaining = cdEndTime - Date.now();
+    if (cdRemaining <= 0) {
+      cdRender(0);
+      cdComplete();
+      return;
+    }
+    cdRender(cdRemaining);
+  }
+
+  function cdComplete() {
+    clearInterval(cdTimer);
+    cdRunning = false;
+    cdPaused = false;
+    document.getElementById('cdDone').classList.add('active');
+    document.getElementById('cdPauseBtn').disabled = true;
+    document.getElementById('cdStartBtn').disabled = false;
+    document.getElementById('cdStartBtn').innerHTML = '▶ BẮT ĐẦU';
+    playBeep();
+    showToast('🔔 Hết thời gian!');
+  }
+
+  function cdPause() {
+    if (!cdRunning) return;
+    cdPaused = true;
+    cdRunning = false;
+    clearInterval(cdTimer);
+    document.getElementById('cdPauseBtn').disabled = true;
+    document.getElementById('cdStartBtn').disabled = false;
+    document.getElementById('cdStartBtn').innerHTML = '▶ TIẾP TỤC';
+    showToast('⏸ Đã tạm dừng');
+  }
+
+  function cdReset() {
+    clearInterval(cdTimer);
+    cdRunning = false;
+    cdPaused = false;
+    cdRemaining = 0;
+    cdRender(0);
+    document.getElementById('cdDone').classList.remove('active');
+    document.getElementById('cdPauseBtn').disabled = true;
+    document.getElementById('cdStartBtn').disabled = false;
+    document.getElementById('cdStartBtn').innerHTML = '▶ BẮT ĐẦU';
+    showToast('↺ Đã reset');
+  }
+
+  // ================= ALARM =================
+  let alarms = [];
+  let lastCheckMinute = -1;
+  let currentRinging = null;
+
+  function addAlarm() {
+    const time = document.getElementById('alarmTime').value;
+    const label = document.getElementById('alarmLabel').value.trim() || 'Báo thức';
+    if (!time) {
+      showToast('⚠️ Chọn giờ!');
+      return;
+    }
+    alarms.push({ id: Date.now(), time, label, enabled: true });
+    document.getElementById('alarmLabel').value = '';
+    renderAlarms();
+    showToast('➕ Đã thêm hẹn giờ ' + time);
+  }
+
+  function renderAlarms() {
+    const list = document.getElementById('alarmList');
+    if (alarms.length === 0) {
+      list.innerHTML = '<div class="empty-laps">Chưa có hẹn giờ nào. Thêm ở bên dưới!</div>';
+      return;
+    }
+    list.innerHTML = alarms.map(a => `
+      <div class="alarm-item ${a.enabled ? 'active' : ''}">
+        <div class="alarm-info">
+          <div class="alarm-time">${a.time}</div>
+          <div class="alarm-label"><strong>${a.label}</strong></div>
+        </div>
+        <div class="alarm-controls">
+          <div class="toggle ${a.enabled ? 'on' : ''}" onclick="toggleAlarm(${a.id})"></div>
+          <button class="icon-btn" onclick="deleteAlarm(${a.id})">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleAlarm(id) {
+    const a = alarms.find(x => x.id === id);
+    if (a) {
+      a.enabled = !a.enabled;
+      renderAlarms();
+      showToast(a.enabled ? '🔔 Đã bật' : '🔕 Đã tắt');
+    }
+  }
+
+  function deleteAlarm(id) {
+    alarms = alarms.filter(x => x.id !== id);
+    renderAlarms();
+    showToast('🗑️ Đã xóa hẹn giờ');
+  }
+
+  function checkAlarms() {
+    const now = new Date();
+    const currentTime = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    const currentMinute = now.getHours() * 60 + now.getMinutes();
+
+    if (currentMinute === lastCheckMinute) return;
+    lastCheckMinute = currentMinute;
+
+    alarms.forEach(a => {
+      if (a.enabled && a.time === currentTime && currentRinging !== a.id) {
+        triggerAlarm(a);
+      }
+    });
+  }
+
+  function triggerAlarm(alarm) {
+    currentRinging = alarm.id;
+    document.getElementById('ringTime').textContent = alarm.time;
+    document.getElementById('ringLabel').textContent = alarm.label;
+    document.getElementById('alarmRing').classList.add('active');
+    playAlarmSound();
+  }
+
+  function stopAlarm() {
+    document.getElementById('alarmRing').classList.remove('active');
+    const a = alarms.find(x => x.id === currentRinging);
+    if (a) {
+      a.enabled = false;
+      renderAlarms();
+    }
+    currentRinging = null;
+    if (alarmAudioCtx) {
+      try { alarmAudioCtx.close(); } catch (e) {}
+      alarmAudioCtx = null;
+    }
+  }
+
+  // ================= ÂM THANH =================
+  let alarmAudioCtx = null;
+
+  function playBeep() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.5);
+      setTimeout(() => ctx.close(), 1000);
+    } catch (e) {}
+  }
+
+  function playAlarmSound() {
+    try {
+      alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const playTone = (freq, start, dur) => {
+        const osc = alarmAudioCtx.createOscillator();
+        const gain = alarmAudioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(alarmAudioCtx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.3, alarmAudioCtx.currentTime + start);
+        gain.gain.exponentialRampToValueAtTime(0.01, alarmAudioCtx.currentTime + start + dur);
+        osc.start(alarmAudioCtx.currentTime + start);
+        osc.stop(alarmAudioCtx.currentTime + start + dur);
+      };
+      for (let i = 0; i < 5; i++) {
+        playTone(880, i * 0.6, 0.3);
+      }
+    } catch (e) {}
+  }
+
+  // ================= MAIN LOOP =================
+  function tick() {
+    const now = new Date();
+    updateAnalogClock(now);
+    updateDigitalClock(now);
+    updateWorldClocks(now);
+    checkAlarms();
+    requestAnimationFrame(tick);
+  }
+
+  // ================= KHỞI TẠO =================
+  setupAnalogClock();
+  setupWorldClocks();
+  renderLaps();
+  renderAlarms();
+  tick();
+</script>
+</body>
+</html>
